@@ -3,6 +3,7 @@
 
 import filecmp
 from Crypto.Util import number
+from sys import argv
 
 
 # Source: https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm
@@ -104,15 +105,13 @@ class RSAReader:
         return bytearray(self.reader.read(128))
 
 
-def navigate_args():
-    
-
-if __name__ = '__main__':
-    from sys import argv
+def main():
     if len(argv) == 0:
-        print('Usage: ')
-    
+        print('Usage:')
 
+if __name__ == "__main__":
+    pass
+    
 
 ciph = RSACipher()
 ciph.encrypt('IMG_1559.jpg', 'encryptedimage.jpg')

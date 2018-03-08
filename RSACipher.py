@@ -1,9 +1,10 @@
-"""Encrypts data with the RSA protocol."""
+"""Encrypts files with 512-bit RSA."""
 
 
 import filecmp
 from Crypto.Util import number
 from sys import argv
+import argparse
 
 
 # Source: https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm
@@ -37,7 +38,8 @@ class RSACipher(object):
             self.encrypt_key = number.getPrime(255)
             self.decrypt_key = modinv(self.encrypt_key, totient)
         else:
-            pass
+            # TODO: add functionality to load a created cipher
+            pass 
 
         self.cipher_key = '%d\n%d\n%d' % (self.n, self.encrypt_key, self.decrypt_key)
 
@@ -106,11 +108,13 @@ class RSAReader:
 
 
 def main():
-    if len(argv) == 0:
-        print('Usage:')
+    """A basic command-line user interface."""
+    parser = argparse.ArgumentParser()
+
+    parser.parse_args()
 
 if __name__ == "__main__":
-    pass
+    pass #should be main()
     
 
 ciph = RSACipher()

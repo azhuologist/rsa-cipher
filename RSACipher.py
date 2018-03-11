@@ -2,9 +2,8 @@
 
 
 import filecmp
-from Crypto.Util import number
-from sys import argv
 import argparse
+from Crypto.Util import number
 
 
 # Source: https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm
@@ -30,7 +29,7 @@ def modinv(a, m):
 class RSACipher(object):
     """Creates an RSA cipher with randomly generated keys."""
     def __init__(self, filename = None):
-        if filename == None:
+        if filename is None:
             prime_one = number.getPrime(510)
             prime_two = number.getPrime(510)
             totient = (prime_one - 1) * (prime_two - 1)
@@ -38,8 +37,10 @@ class RSACipher(object):
             self.encrypt_key = number.getPrime(255)
             self.decrypt_key = modinv(self.encrypt_key, totient)
         else:
-            # TODO: add functionality to load a created cipher
-            pass 
+            with open(filename, 'r') as source:
+                self.n = int(source.readline())
+                self.encrypt_key = int(source.readline())
+                self.decrypt_key = int(source.readline())
 
         self.cipher_key = '%d\n%d\n%d' % (self.n, self.encrypt_key, self.decrypt_key)
 
@@ -110,16 +111,27 @@ class RSAReader:
 def main():
     """A basic command-line user interface."""
     parser = argparse.ArgumentParser()
+    parser.add_argument("cipher", type = str, help = "\'new\' to generate a new cipher with random keys,"
+                                                     "\'[filename]\' to load an existing one")
+    parser.add_argument("action", type = str, help = "")
+    args = parser.parse_args()
 
-    parser.parse_args()
+    if args.cipher == "new":
+        cipher = RSACipher()
+    else:
+        cipher = RSACipher(args.cipher)
 
-if __name__ == "__main__":
-    pass #should be main()
     
 
-ciph = RSACipher()
-ciph.encrypt('IMG_1559.jpg', 'encryptedimage.jpg')
-ciph.decrypt('encryptedimage.jpg', 'result.jpg')
 
-if filecmp.cmp('IMG_1559.jpg', 'result.jpg'):
-    print('Success!')
+
+if __name__ == "__main__":
+    main()
+
+
+# ciph = RSACipher()
+# ciph.encrypt('IMG_1559.jpg', 'encryptedimage.jpg')
+# ciph.decrypt('encryptedimage.jpg', 'result.jpg')
+
+# if filecmp.cmp('IMG_1559.jpg', 'result.jpg'):
+#     print('Success!')

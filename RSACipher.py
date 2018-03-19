@@ -111,9 +111,14 @@ class RSAReader:
 def main():
     """A basic command-line user interface."""
     parser = argparse.ArgumentParser()
+    # TODO: fix help message formatting
     parser.add_argument("cipher", type = str, help = "\'new\' to generate a new cipher with random keys,"
-                                                     "\'[filename]\' to load an existing one")
-    parser.add_argument("action", type = str, help = "")
+                                                     "\n\'[filename]\' to load an existing one")
+    parser.add_argument("action", type = str, help = "\'encrypt\' or \'decrypt\'", 
+                                    choices = ["encrypt", "en", "decrypt", "de"])
+    parser.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
+    parser.add_argument("outputfile", type = str, help = "file to write to")
+    parser.add_argument("--save", type = str, help = "file to save to", nargs = 1)
     args = parser.parse_args()
 
     if args.cipher == "new":
@@ -121,7 +126,12 @@ def main():
     else:
         cipher = RSACipher(args.cipher)
 
-    
+    if args.action == "encrypt":
+        pass
+    elif args.action == "decrypt":
+        pass
+    else:
+        pass
 
 
 

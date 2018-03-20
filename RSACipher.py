@@ -114,8 +114,8 @@ def main():
     # TODO: fix help message formatting
     parser.add_argument("cipher", type = str, help = "\'new\' to generate a new cipher with random keys,"
                                                      "\n\'[filename]\' to load an existing one")
-    parser.add_argument("action", type = str, help = "\'encrypt\' or \'decrypt\'", 
-                                    choices = ["encrypt", "en", "decrypt", "de"])
+    parser.add_argument("action", type = str, help = "\'encrypt\' or \'decrypt\'",
+                        choices = ["encrypt", "en", "decrypt", "de"])
     parser.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
     parser.add_argument("outputfile", type = str, help = "file to write to")
     parser.add_argument("--save", type = str, help = "file to save to", nargs = 1)
@@ -126,13 +126,14 @@ def main():
     else:
         cipher = RSACipher(args.cipher)
 
-    if args.action == "encrypt":
-        pass
-    elif args.action == "decrypt":
-        pass
+    if args.action == "encrypt" or args.action == "en":
+        cipher.encrypt(args.inputfile, args.outputfile)
+    elif args.action == "decrypt" or args.action == "de":
+        cipher.decrypt(args.inputfile, args.outputfile)
     else:
-        pass
+        print("This shouldn't have happened.")
 
+    
 
 
 if __name__ == "__main__":

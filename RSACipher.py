@@ -1,7 +1,6 @@
 """Encrypts files with 512-bit RSA."""
 
 
-import filecmp
 import argparse
 from Crypto.Util import number
 
@@ -11,9 +10,9 @@ def egcd(a, b):
     """Perform Euclid's greatest common divisor algorithm."""
     if a == 0:
         return (b, 0, 1)
-    else:
-        g, y, x = egcd(b % a, a)
-        return (g, x - (b // a) * y, y)
+
+    g, y, x = egcd(b % a, a)
+    return (g, x - (b // a) * y, y)
 
 
 # Source: https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm
@@ -111,7 +110,7 @@ class RSAReader:
 def main():
     """A basic command-line user interface."""
     parser = argparse.ArgumentParser()
-    # TODO: fix help message formatting
+    # TODO: fix help message formatting, add option argument groups
     parser.add_argument("cipher", type = str, help = "\'new\' to generate a new cipher with random keys,"
                                                      "\n\'[filename]\' to load an existing one")
     parser.add_argument("action", type = str, help = "\'encrypt\' or \'decrypt\'",
@@ -126,6 +125,7 @@ def main():
     else:
         cipher = RSACipher(args.cipher)
 
+    # TODO: add exception catching
     if args.action == "encrypt" or args.action == "en":
         cipher.encrypt(args.inputfile, args.outputfile)
     elif args.action == "decrypt" or args.action == "de":
@@ -133,16 +133,7 @@ def main():
     else:
         print("This shouldn't have happened.")
 
-    
 
 
 if __name__ == "__main__":
     main()
-
-
-# ciph = RSACipher()
-# ciph.encrypt('IMG_1559.jpg', 'encryptedimage.jpg')
-# ciph.decrypt('encryptedimage.jpg', 'result.jpg')
-
-# if filecmp.cmp('IMG_1559.jpg', 'result.jpg'):
-#     print('Success!')

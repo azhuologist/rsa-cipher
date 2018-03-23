@@ -16,8 +16,4 @@ To load an existing key-pair:
 > RSACipher.py keys.txt decrypt sourcefile.txt output.txt
 ```
 
-To save a newly created key-pair:
-
-```bash
-> RSACipher.py new --save keys.txt
-```
+To save a newly created key-pair, add `--save [keyfile]` to the end of your command.

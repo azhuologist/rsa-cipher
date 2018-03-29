@@ -2,6 +2,8 @@
 
 
 import argparse
+import filecmp
+from secrets import token_bytes
 from Crypto.Util import number
 
 
@@ -55,7 +57,8 @@ class RSACipher(object):
                     encrypted_bytes = bytearray(encrypted_chunk.to_bytes(128, 'big'))
 
                     if len(encrypted_bytes) < 128:
-                        padding = bytes([0] * (128 - len(encrypted_bytes)))
+                        # padding = bytes([0] * (128 - len(encrypted_bytes)))
+                        padding = token_bytes(128 - len(encrypted_bytes))
                         encrypted_bytes = padding + encrypted_bytes
                     dest.write(encrypted_bytes)
 
@@ -96,7 +99,8 @@ class RSAReader:
         chunk = length_byte + data_bytes
 
         if len(data_bytes) < 126:
-            padding = bytearray(126 - len(data_bytes))
+            # originally: padding = bytearray(126 - len(data_bytes))
+            padding = token_bytes(126 - len(data_bytes))
             chunk += padding
 
         assert len(chunk) == 127  # sanity check
@@ -135,5 +139,5 @@ def main():
 
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

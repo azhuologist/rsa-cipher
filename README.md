@@ -1,5 +1,5 @@
 # rsa-cipher
-A command line application that encrypts files with 1024-bit RSA, tested on Windows machines only. Work in progress.
+A command line application that encrypts files with 1024-bit RSA, tested on Windows machines only.
 
 Usage
 -----
@@ -20,5 +20,5 @@ To save a newly created key-pair, add `--save [keyfile]` to the end of your comm
 
 TODOs
 -----
-
-
+* Complete CLI
+* Unit Tests

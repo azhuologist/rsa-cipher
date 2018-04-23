@@ -2,7 +2,6 @@
 
 
 import argparse
-import filecmp
 from secrets import token_bytes
 from Crypto.Util import number
 
@@ -28,8 +27,9 @@ def modinv(a, m):
 
 
 class RSACipher(object):
-    """Creates an RSA cipher with randomly generated keys."""
+    """Creates an RSA cipher with randomly generated keys, or loads keys from a saved file."""
     def __init__(self, filename = None):
+        # generate random keys
         if filename is None:
             prime_one = number.getPrime(510)
             prime_two = number.getPrime(510)
@@ -37,6 +37,7 @@ class RSACipher(object):
             self.n = prime_one * prime_two
             self.encrypt_key = number.getPrime(255)
             self.decrypt_key = modinv(self.encrypt_key, totient)
+        # load keys from a file
         else:
             with open(filename, 'r') as source:
                 self.n = int(source.readline())
@@ -139,5 +140,5 @@ def main():
 
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

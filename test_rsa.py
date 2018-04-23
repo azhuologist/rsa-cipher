@@ -6,6 +6,7 @@ import os
 import filecmp
 import RSACipher
 
+
 class BasicTests(unittest.TestCase):
     """Tests different aspects of the RSA protocol."""
 
@@ -16,7 +17,6 @@ class BasicTests(unittest.TestCase):
         ciph.decrypt('encryptedtext.txt', 'result.txt')
 
         self.assertTrue(filecmp.cmp('resources/test/dorian_gray.txt', 'result.txt'))
-
 
     def test_image(self):
         """Tests encryption / decryption on a small PNG image file."""
@@ -42,6 +42,7 @@ class BasicTests(unittest.TestCase):
         os.remove('encryptedimage.png')
         os.remove('result.png')
         os.remove('savedkeys.txt')
+
 
 if __name__ == '__main__':
     unittest.main()

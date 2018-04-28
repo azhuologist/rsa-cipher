@@ -29,6 +29,7 @@ def modinv(a, m):
 class RSACipher(object):
     """Creates an RSA cipher with randomly generated keys, or loads keys from a saved file."""
     def __init__(self, filename = None):
+
         # generate random keys
         if filename is None:
             prime_one = number.getPrime(510)
@@ -37,6 +38,7 @@ class RSACipher(object):
             self.n = prime_one * prime_two
             self.encrypt_key = number.getPrime(255)
             self.decrypt_key = modinv(self.encrypt_key, totient)
+
         # load keys from a file
         else:
             with open(filename, 'r') as source:
@@ -83,7 +85,6 @@ class RSACipher(object):
             dest.write(self.cipher_key)
 
 
-
 class RSAReader:
     """Reads data from a source file to be encrypted."""
     def __init__(self, reader):
@@ -115,29 +116,32 @@ class RSAReader:
 def main():
     """A basic command-line user interface."""
     parser = argparse.ArgumentParser()
-    # TODO: fix help message formatting, add option argument groups
-    parser.add_argument("cipher", type = str, help = "\'new\' to generate a new cipher with random keys,"
-                                                     "\n\'[filename]\' to load an existing one")
-    parser.add_argument("action", type = str, help = "\'encrypt\' or \'decrypt\'",
-                        choices = ["encrypt", "en", "decrypt", "de"])
-    parser.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
-    parser.add_argument("outputfile", type = str, help = "file to write to")
-    parser.add_argument("--save", type = str, help = "file to save to", nargs = 1)
+    parser.add_argument("--load", type = str, help = "Load an existing set of keys from \'[filename]\'")
+    parser.add_argument("--save", type = str, help = "file to save to")
+
+    subparsers = parser.add_subparsers()
+    parse_encrypt = subparsers.add_parser("encrypt", help = 'en')
+    parse_encrypt.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
+    parse_encrypt.add_argument("outputfile", type = str, help = "file to write to")
+    parse_encrypt.set_defaults(func=RSACipher.encrypt)
+
+    parse_decrypt = subparsers.add_parser("decrypt", help = 'de')
+    parse_decrypt.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
+    parse_decrypt.add_argument("outputfile", type = str, help = "file to write to")
+    parse_decrypt.set_defaults(func=RSACipher.decrypt)
+
+    # ['--save', 'keys.txt', 'encrypt', 'resources/test/dorian_gray.txt', 'result.txt']
     args = parser.parse_args()
+    # print(vars(args))
 
-    if args.cipher == "new":
-        cipher = RSACipher()
-    else:
-        cipher = RSACipher(args.cipher)
+    cipher = RSACipher()
+    if args.load:
+        cipher = RSACipher(args.load)
 
-    # TODO: add exception catching
-    if args.action == "encrypt" or args.action == "en":
-        cipher.encrypt(args.inputfile, args.outputfile)
-    elif args.action == "decrypt" or args.action == "de":
-        cipher.decrypt(args.inputfile, args.outputfile)
-    else:
-        print("This shouldn't have happened.")
+    args.func(cipher, args.inputfile, args.outputfile)
 
+    if args.save:
+        cipher.save(args.save)
 
 
 if __name__ == "__main__":

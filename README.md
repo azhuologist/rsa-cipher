@@ -4,21 +4,30 @@ A command line application that encrypts files with 1024-bit RSA, tested on Wind
 Usage
 -----
 
-To encrypt a file and write encrypted data to an output file with a randomly generated key-pair:
+To encrypt a file:
 
 ```bash
-> RSACipher.py new encrypt sourcefile.txt output.txt
+> python RSACipher.py encrypt sourcefile.txt output.txt
 ```
 
-To load an existing key-pair:
+To decrypt a file:
 
 ```bash
-> RSACipher.py keys.txt decrypt sourcefile.txt output.txt
+> python RSACipher.py decrypt sourcefile.txt output.txt
 ```
 
-To save a newly created key-pair, add `--save [keyfile]` to the end of your command.
+You can save a newly created key-pair by adding `--save [keyfile]` to the beginning of your command:
+
+```bash
+> python RSACipher.py --save keys.txt decrypt sourcefile.txt output.txt
+```
+
+You can then load and use this key-pair by adding `--load [keyfile]` to the beginning of your command:
+
+```bash
+> RSACipher.py --load keys.txt decrypt sourcefile.txt output.txt
+```
 
 TODOs
 -----
-* Complete CLI
-* Unit Tests
+* Do comprehensive tests to ensure complete functionality

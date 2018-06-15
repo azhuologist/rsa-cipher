@@ -2,13 +2,14 @@
 
 
 import argparse
+import sys
 from secrets import token_bytes
 from Crypto.Util import number
 
 
 # Source: https://en.wikibooks.org/wiki/Algorithm_Implementation/Mathematics/Extended_Euclidean_algorithm
 def egcd(a, b):
-    """Perform Euclid's greatest common divisor algorithm."""
+    """Recursively executes Euclid's greatest common divisor algorithm."""
     if a == 0:
         return (b, 0, 1)
 
@@ -29,7 +30,6 @@ def modinv(a, m):
 class RSACipher(object):
     """Creates an RSA cipher with randomly generated keys, or loads keys from a saved file."""
     def __init__(self, filename = None):
-
         # generate random keys
         if filename is None:
             prime_one = number.getPrime(510)
@@ -49,7 +49,12 @@ class RSACipher(object):
         self.cipher_key = '%d\n%d\n%d' % (self.n, self.encrypt_key, self.decrypt_key)
 
     def encrypt(self, source_file, destination_file):
-        """Encrypts bytes from source_file and writes the encrypted bytes to destination_file."""
+        """Encrypts bytes from `source_file` and writes the encrypted bytes to `destination_file`.
+
+        Raises:
+            FileNotFoundError: if either `source_file` or `destination_file` could not be found.
+
+        """
         with open(source_file, 'rb') as source:
             reader = RSAReader(source)
             with open(destination_file, 'wb') as dest:
@@ -61,12 +66,17 @@ class RSACipher(object):
 
                     if len(encrypted_bytes) < 128:
                         # padding = bytes([0] * (128 - len(encrypted_bytes)))
-                        padding = token_bytes(128 - len(encrypted_bytes))
+                        padding = token_bytes(128 - len(encrypted_bytes)) # randomized padding
                         encrypted_bytes = padding + encrypted_bytes
                     dest.write(encrypted_bytes)
 
     def decrypt(self, source_file, destination_file):
-        """Decrypts encrypted bytes from source_file and writes decrypted bytes to destination_file."""
+        """Decrypts encrypted bytes from `source_file` and writes decrypted bytes to `destination_file`.
+
+        Raises:
+            FileNotFoundError: if either `source_file` or `destination_file` could not be found.
+
+        """
         with open(source_file, 'rb') as source:
             reader = RSAReader(source)
             with open(destination_file, 'wb') as dest:
@@ -114,7 +124,7 @@ class RSAReader:
 
 
 def main():
-    """A basic command-line user interface."""
+    """Executes the command-line user interface."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--load", type = str, help = "Load an existing set of keys from \'[filename]\'")
     parser.add_argument("--save", type = str, help = "file to save to")
@@ -123,25 +133,35 @@ def main():
     parse_encrypt = subparsers.add_parser("encrypt", help = 'en')
     parse_encrypt.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
     parse_encrypt.add_argument("outputfile", type = str, help = "file to write to")
-    parse_encrypt.set_defaults(func=RSACipher.encrypt)
+    parse_encrypt.set_defaults(func = RSACipher.encrypt)
 
     parse_decrypt = subparsers.add_parser("decrypt", help = 'de')
     parse_decrypt.add_argument("inputfile", type = str, help = "source file to encrypt or decrypt")
     parse_decrypt.add_argument("outputfile", type = str, help = "file to write to")
-    parse_decrypt.set_defaults(func=RSACipher.decrypt)
+    parse_decrypt.set_defaults(func = RSACipher.decrypt)
 
-    # ['--save', 'keys.txt', 'encrypt', 'resources/test/dorian_gray.txt', 'result.txt']
     args = parser.parse_args()
-    # print(vars(args))
 
     cipher = RSACipher()
-    if args.load:
-        cipher = RSACipher(args.load)
+    try:
+        if args.load:
+            cipher = RSACipher(args.load)
+    except FileNotFoundError:
+        print("Could not find the file " + args.load, file = sys.stderr)
+        sys.exit(1)
 
-    args.func(cipher, args.inputfile, args.outputfile)
+    try:
+        args.func(cipher, args.inputfile, args.outputfile)
+    except FileNotFoundError:
+        print("Could not find the file %s or %s" % (args.inputfile, args.outputfile), file = sys.stderr)
+        sys.exit(1)
 
     if args.save:
-        cipher.save(args.save)
+        try:
+            cipher.save(args.save)
+        except FileNotFoundError:
+            print("Could not find the file " + args.save, file = sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == "__main__":

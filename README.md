@@ -30,4 +30,4 @@ You can then load and use this key-pair by adding `--load [keyfile]` to the begi
 
 TODOs
 -----
-* Do comprehensive tests to ensure complete functionality
+* Write more comprehensive tests to ensure complete functionality

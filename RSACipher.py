@@ -123,11 +123,12 @@ class RSAReader:
         return bytearray(self.reader.read(128))
 
 
+
 def main():
     """Executes the command-line user interface."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--load", type = str, help = "Load an existing set of keys from \'[filename]\'")
-    parser.add_argument("--save", type = str, help = "file to save to")
+    parser.add_argument("--save", type = str, help = "Save the generated set of keys to \'[filename]\'")
 
     subparsers = parser.add_subparsers()
     parse_encrypt = subparsers.add_parser("encrypt", help = 'en')
@@ -148,20 +149,17 @@ def main():
             cipher = RSACipher(args.load)
     except FileNotFoundError:
         print("Could not find the file " + args.load, file = sys.stderr)
-        sys.exit(1)
 
     try:
         args.func(cipher, args.inputfile, args.outputfile)
     except FileNotFoundError:
         print("Could not find the file %s or %s" % (args.inputfile, args.outputfile), file = sys.stderr)
-        sys.exit(1)
 
     if args.save:
         try:
             cipher.save(args.save)
         except FileNotFoundError:
             print("Could not find the file " + args.save, file = sys.stderr)
-            sys.exit(1)
 
 
 if __name__ == "__main__":

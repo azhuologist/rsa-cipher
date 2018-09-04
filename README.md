@@ -7,23 +7,23 @@ Usage
 To encrypt a file:
 
 ```bash
-python RSACipher.py encrypt sourcefile.txt output.txt
+python RSACipher.py encrypt [sourcefile] [output]
 ```
 
 To decrypt a file:
 
 ```bash
-python RSACipher.py decrypt sourcefile.txt output.txt
+python RSACipher.py decrypt [sourcefile] [output]
 ```
 
 You can save a newly created key-pair by adding `--save [keyfile]` to the beginning of your command:
 
 ```bash
-python RSACipher.py --save keys.txt decrypt sourcefile.txt output.txt
+python RSACipher.py --save [keyfile] decrypt [sourcefile] [outputfile]
 ```
 
 You can then load and use this key-pair by adding `--load [keyfile]` to the beginning of your command:
 
 ```bash
-RSACipher.py --load keys.txt decrypt sourcefile.txt output.txt
+RSACipher.py --load [keyfile] decrypt [sourcefile] [outputfile]
 ```
